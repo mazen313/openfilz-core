@@ -5,8 +5,8 @@ ARG NG_APP_API_URL
 
 ARG NG_APP_GRAPHQL_URL
 # Set the environment variables
-ENV NG_APP_API_URL=$NG_APP_API_URL
-ARG NG_APP_GRAPHQL_URL=$NG_APP_GRAPHQL_URL
+ENV NG_APP_API_URL=https://openfilzapi.openfilz.org/api/v1
+ARG NG_APP_GRAPHQL_URL=https://openfilzapi.openfilz.org/graphql/v1
 
 WORKDIR /app
 
