@@ -1,4 +1,3 @@
-@ -0,0 +1,55 @@
 # Multi-stage Dockerfile for OpenFilz API
 # Stage 1: Build the application
 FROM eclipse-temurin:25-jdk-noble AS build
