@@ -1,4 +1,3 @@
-@ -1,8 +1,39 @@
 # Multi-stage Dockerfile for OpenFilz Web UI
 # Stage 1: Build the Angular application
 FROM node:22-alpine AS build
