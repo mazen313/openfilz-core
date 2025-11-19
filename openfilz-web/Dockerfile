@@ -5,31 +5,29 @@ FROM node:22-alpine AS build
 WORKDIR /app
 
 # Copy package files
-COPY package.json package-lock.json ./
+COPY openfilz-web/package.json openfilz-web/package-lock.json ./
 
 # Install dependencies
 RUN npm ci --legacy-peer-deps
 
 # Copy source code
-COPY . .
+COPY openfilz-web/ .
 
 # Build the application for production
 RUN npm run build -- --configuration production
 
 # Stage 2: Serve with Nginx
 FROM nginxinc/nginx-unprivileged:alpine-perl
-COPY dist/openfilz-ui/browser /usr/share/nginx/html
 
 # Copy built assets from build stage
 COPY --from=build /app/dist/openfilz-ui/browser /usr/share/nginx/html
 
 # Copy nginx configuration
-COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY openfilz-web/nginx/default.conf /etc/nginx/conf.d/default.conf
 
 # Switch to nginx user
 USER nginx
 
-EXPOSE 80
 # Expose port
 EXPOSE 8080
 
