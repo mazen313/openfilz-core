@@ -40,36 +40,9 @@ USER openfilz
 # Expose port
 EXPOSE 8081
 
-# Environment variables with defaults
-# Database Configuration
-ENV DB_HOST=localhost \
-    DB_PORT=5432 \
-    DB_NAME=dms_db \
-    DB_USER=dms_user \
-    DB_PASSWORD=dms_password
-
-# Storage Configuration
-ENV STORAGE_TYPE=local \
-    STORAGE_LOCAL_BASE_PATH=/app/storage \
-    MINIO_ENDPOINT=http://localhost:9000 \
-    MINIO_ACCESS_KEY=minioadmin \
-    MINIO_SECRET_KEY=minioadmin \
-    MINIO_BUCKET_NAME=dms-bucket
-
-# Security Configuration
-ENV KEYCLOAK_ISSUER_URI=http://localhost:8080/realms/your-realm \
-    OPENFILZ_SECURITY_NO_AUTH=true \
-    OPENFILZ_SECURITY_WORM_MODE=false
-
-# OpenSearch Configuration (Optional)
-ENV OPENSEARCH_URL=http://localhost:9200
-
-# Application Configuration
-ENV SERVER_PORT=8081 \
-    SPRING_PROFILES_ACTIVE=default
-
-# Logging Configuration
-ENV LOGGING_LEVEL_ORG_OPENFILZ=INFO
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:8081/actuator/health || exit 1
 
 # JVM options for container environment
 ENV JAVA_OPTS="-XX:+UseContainerSupport \
@@ -77,10 +50,6 @@ ENV JAVA_OPTS="-XX:+UseContainerSupport \
     -XX:+UseG1GC \
     -XX:+UseStringDeduplication \
     -Djava.security.egd=file:/dev/./urandom"
-
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD curl -f http://localhost:8081/actuator/health || exit 1
 
 # Run the application
 ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
