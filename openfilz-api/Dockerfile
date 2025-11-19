@@ -1,23 +1,22 @@
 # Multi-stage Dockerfile for OpenFilz API
 # Stage 1: Build the application
-FROM eclipse-temurin:25-jdk-noble AS build
+FROM maven:3.9-eclipse-temurin-25 AS build
 
 WORKDIR /app
 
-# Copy Maven wrapper and pom files
-COPY .mvn .mvn
-COPY mvnw .
+# Copy pom files for dependency resolution
 COPY pom.xml .
 COPY openfilz-api/pom.xml openfilz-api/
+COPY openfilz-gateway/pom.xml openfilz-gateway/
 
 # Download dependencies (cached layer)
-RUN ./mvnw dependency:go-offline -pl openfilz-api -am
+RUN mvn dependency:go-offline -pl openfilz-api -am
 
 # Copy source code
 COPY openfilz-api/src openfilz-api/src
 
 # Build the application
-RUN ./mvnw clean package -pl openfilz-api -am -DskipTests
+RUN mvn clean package -pl openfilz-api -am -DskipTests
 
 # Stage 2: Runtime image
 FROM eclipse-temurin:25-jre-noble
