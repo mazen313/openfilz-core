@@ -1,6 +1,12 @@
 # Multi-stage Dockerfile for OpenFilz Web UI
 # Stage 1: Build the Angular application
 FROM node:22-alpine AS build
+ARG NG_APP_API_URL
+
+ARG NG_APP_GRAPHQL_URL
+# Set the environment variables
+ENV NG_APP_API_URL=$NG_APP_API_URL
+ARG NG_APP_GRAPHQL_URL=$NG_APP_GRAPHQL_URL
 
 WORKDIR /app
 
@@ -13,6 +19,7 @@ RUN npm ci --legacy-peer-deps
 # Copy source code
 COPY openfilz-web/ .
 
+RUN echo 'console.log("NG_APP_GRAPHQL_URL", import.meta.env["NG_APP_GRAPHQL_URL"])' >>src/main.ts
 # Build the application for production
 RUN npm run build -- --configuration production
 
