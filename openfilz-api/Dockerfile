@@ -15,8 +15,9 @@ RUN mvn dependency:go-offline -pl openfilz-api -am
 # Copy source code
 COPY openfilz-api/src openfilz-api/src
 
-# Build the application
-RUN mvn clean package -pl openfilz-api -am -DskipTests
+# Build the application and create executable JAR
+# Use verify phase to trigger spring-boot:repackage in post-integration-test phase
+RUN mvn clean verify -pl openfilz-api -am -DskipTests
 
 # Stage 2: Runtime image
 FROM eclipse-temurin:25-jre-noble
